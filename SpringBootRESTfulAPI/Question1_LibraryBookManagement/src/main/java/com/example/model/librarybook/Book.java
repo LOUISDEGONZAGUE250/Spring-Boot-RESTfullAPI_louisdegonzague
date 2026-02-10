@@ -1,25 +1,24 @@
-package com.example.model.librarybook;
+package auca.ac.rw.restfullApiAssignment.modal.library;
 
 public class Book {
+
     private Long id;
     private String title;
     private String author;
     private String isbn;
-    private int publicationYear;
+    private int year;
 
-    // Constructors
     public Book() {
     }
 
-    public Book(Long id, String title, String author, String isbn, int publicationYear) {
+    public Book(Long id, String title, String author, String isbn, int year) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.isbn = isbn;
-        this.publicationYear = publicationYear;
+        this.year = year;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -52,22 +51,12 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public int getPublicationYear() {
-        return publicationYear;
+    public int getYear() {
+        return year;
     }
 
-    public void setPublicationYear(int publicationYear) {
-        this.publicationYear = publicationYear;
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", isbn='" + isbn + '\'' +
-                ", publicationYear=" + publicationYear +
-                '}';
+    public void setYear(int year) {
+        this.year = year;
     }
 }
+
