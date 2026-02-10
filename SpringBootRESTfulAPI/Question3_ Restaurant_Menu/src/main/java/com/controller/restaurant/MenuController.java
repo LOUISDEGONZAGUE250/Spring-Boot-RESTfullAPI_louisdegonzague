@@ -1,130 +1,134 @@
 package com.controller.restaurant;
 
 import com.model.restaurant.MenuItem;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/menu")
 @CrossOrigin(origins = "*")
 public class MenuController {
 
-    private final List<MenuItem> items = new ArrayList<>();
-    private long nextId = 1L;
+    private List<MenuItem> items = new ArrayList<>();
+    private long nextId = 1;
 
     public MenuController() {
-        // Initialize at least 8 sample items across categories
-        items.add(new MenuItem(nextId++, "Garlic Bread", "Crispy bread with garlic and herb butter", 4.99, "Appetizer",
-                true));
-        items.add(new MenuItem(nextId++, "Chicken Wings", "Spicy wings with BBQ sauce and ranch dip", 7.99, "Appetizer",
-                true));
+
+        items.add(new MenuItem(nextId++, "Garlic Bread",
+                "Crispy bread with garlic and butter", 4.99, "Appetizer", true));
+
+        items.add(new MenuItem(nextId++, "Chicken Wings",
+                "Spicy chicken wings with sauce", 7.99, "Appetizer", true));
+
         items.add(new MenuItem(nextId++, "Grilled Salmon",
-                "Fresh Atlantic salmon with lemon butter sauce and seasonal vegetables", 18.99, "Main Course", true));
-        items.add(new MenuItem(nextId++, "Beef Steak", "Prime cut beef steak, grilled to perfection with mushrooms",
-                24.99, "Main Course", true));
-        items.add(new MenuItem(nextId++, "Chocolate Lava Cake",
-                "Warm chocolate cake with molten center and vanilla ice cream", 6.99, "Dessert", true));
-        items.add(new MenuItem(nextId++, "Cheesecake", "Classic New York style cheesecake with berry compote", 5.99,
-                "Dessert", false));
-        items.add(
-                new MenuItem(nextId++, "Fresh Orange Juice", "Freshly squeezed orange juice", 3.99, "Beverage", true));
-        items.add(new MenuItem(nextId++, "Iced Tea", "Refreshing iced tea with lemon", 2.99, "Beverage", true));
+                "Grilled salmon with vegetables", 18.99, "Main Course", true));
+
+        items.add(new MenuItem(nextId++, "Beef Steak",
+                "Grilled beef steak", 24.99, "Main Course", true));
+
+        items.add(new MenuItem(nextId++, "Chocolate Cake",
+                "Chocolate cake with ice cream", 6.99, "Dessert", true));
+
+        items.add(new MenuItem(nextId++, "Cheesecake",
+                "Cheesecake with berries", 5.99, "Dessert", false));
+
+        items.add(new MenuItem(nextId++, "Orange Juice",
+                "Fresh orange juice", 3.99, "Beverage", true));
+
+        items.add(new MenuItem(nextId++, "Iced Tea",
+                "Cold iced tea", 2.99, "Beverage", true));
     }
 
-    // GET /api/menu
+    // Get all menu items
     @GetMapping
-    public ResponseEntity<List<MenuItem>> getAllMenuItems() {
-        return new ResponseEntity<>(items, HttpStatus.OK);
+    public List<MenuItem> getAllMenuItems() {
+        return items;
     }
 
-    // GET /api/menu/{id}
+    // Get menu item by ID
     @GetMapping("/{id}")
-    public ResponseEntity<MenuItem> getMenuItemById(@PathVariable Long id) {
-        Optional<MenuItem> found = items.stream().filter(i -> i.getId().equals(id)).findFirst();
-        return found.map(menuItem -> new ResponseEntity<>(menuItem, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public MenuItem getMenuItemById(@PathVariable Long id) {
+        for (MenuItem item : items) {
+            if (item.getId().equals(id)) {
+                return item;
+            }
+        }
+        return null;
     }
 
-    // GET /api/menu/category/{category}
+    // Get menu items by category
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<MenuItem>> getMenuItemsByCategory(@PathVariable String category) {
-        List<MenuItem> filtered = new ArrayList<>();
-        for (MenuItem i : items) {
-            if (i.getCategory().equalsIgnoreCase(category)) {
-                filtered.add(i);
+    public List<MenuItem> getMenuItemsByCategory(@PathVariable String category) {
+        List<MenuItem> result = new ArrayList<>();
+
+        for (MenuItem item : items) {
+            if (item.getCategory().equalsIgnoreCase(category)) {
+                result.add(item);
             }
         }
-        if (filtered.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(filtered, HttpStatus.OK);
+        return result;
     }
 
-    // GET /api/menu/available?available=true
+    // Get available or unavailable items
     @GetMapping("/available")
-    public ResponseEntity<List<MenuItem>> getAvailableMenuItems(
-            @RequestParam(value = "available", defaultValue = "true") boolean available) {
-        List<MenuItem> filtered = new ArrayList<>();
-        for (MenuItem i : items) {
-            if (i.isAvailable() == available) {
-                filtered.add(i);
+    public List<MenuItem> getAvailableMenuItems(
+            @RequestParam(defaultValue = "true") boolean available) {
+
+        List<MenuItem> result = new ArrayList<>();
+
+        for (MenuItem item : items) {
+            if (item.isAvailable() == available) {
+                result.add(item);
             }
         }
-        if (filtered.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(filtered, HttpStatus.OK);
+        return result;
     }
 
-    // GET /api/menu/search?name={name}
+    // Search menu items by name
     @GetMapping("/search")
-    public ResponseEntity<List<MenuItem>> searchMenuItemsByName(@RequestParam(value = "name") String name) {
-        List<MenuItem> filtered = new ArrayList<>();
-        for (MenuItem i : items) {
-            if (i.getName().toLowerCase().contains(name.toLowerCase())) {
-                filtered.add(i);
+    public List<MenuItem> searchMenuItemsByName(@RequestParam String name) {
+        List<MenuItem> result = new ArrayList<>();
+
+        for (MenuItem item : items) {
+            if (item.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(item);
             }
         }
-        if (filtered.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(filtered, HttpStatus.OK);
+        return result;
     }
 
-    // POST /api/menu
+    // Add new menu item
     @PostMapping
-    public ResponseEntity<MenuItem> addMenuItem(@RequestBody MenuItem menuItem) {
+    public MenuItem addMenuItem(@RequestBody MenuItem menuItem) {
         menuItem.setId(nextId++);
         items.add(menuItem);
-        return new ResponseEntity<>(menuItem, HttpStatus.CREATED);
+        return menuItem;
     }
 
-    // PUT /api/menu/{id}/availability?available=true
+    // Update availability
     @PutMapping("/{id}/availability")
-    public ResponseEntity<MenuItem> toggleMenuItemAvailability(@PathVariable Long id,
-            @RequestParam(value = "available") boolean available) {
-        for (MenuItem i : items) {
-            if (i.getId().equals(id)) {
-                i.setAvailable(available);
-                return new ResponseEntity<>(i, HttpStatus.OK);
+    public MenuItem updateAvailability(@PathVariable Long id,
+                                       @RequestParam boolean available) {
+        for (MenuItem item : items) {
+            if (item.getId().equals(id)) {
+                item.setAvailable(available);
+                return item;
             }
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return null;
     }
 
-    // DELETE /api/menu/{id}
+    // Delete menu item
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMenuItem(@PathVariable Long id) {
-        Optional<MenuItem> found = items.stream().filter(i -> i.getId().equals(id)).findFirst();
-        if (found.isPresent()) {
-            items.remove(found.get());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public String deleteMenuItem(@PathVariable Long id) {
+        for (MenuItem item : items) {
+            if (item.getId().equals(id)) {
+                items.remove(item);
+                return "Menu item deleted";
+            }
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return "Menu item not found";
     }
 }
