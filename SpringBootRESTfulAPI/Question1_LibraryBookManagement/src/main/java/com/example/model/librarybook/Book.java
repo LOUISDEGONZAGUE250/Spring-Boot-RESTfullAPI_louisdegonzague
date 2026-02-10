@@ -1,4 +1,4 @@
-package auca.ac.rw.restfullApiAssignment.modal.library;
+package com.example.modal.library;
 
 public class Book {
 
