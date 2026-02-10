@@ -1,0 +1,4 @@
+com\example\controller\StudentController.class
+com\example\model\Student.class
+com\example\service\StudentService.class
+com\example\StudentRegistration.class
