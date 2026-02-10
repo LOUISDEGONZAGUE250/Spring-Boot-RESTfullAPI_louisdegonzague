@@ -1,78 +1,73 @@
 package com.example.controller;
 
 import com.example.model.Student;
-import com.example.service.StudentService;
+import com.example.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
 
     @Autowired
-    private StudentService studentService;
+    private StudentRepository studentRepository;
 
-    // GET /api/students - Get all students
+    // Get all students
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> students = studentService.getAllStudents();
-        return ResponseEntity.ok(students);
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 
-    // GET /api/students/{studentId} - Get student by ID
-    @GetMapping("/{studentId}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Long studentId) {
-        Student student = studentService.getStudentById(studentId);
-        if (student != null) {
-            return ResponseEntity.ok(student);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    // Get student by ID
+    @GetMapping("/{id}")
+    public Student getStudentById(@PathVariable Long id) {
+        Optional<Student> student = studentRepository.findById(id);
+        return student.orElse(null);
     }
 
-    // GET /api/students/major/{major} - Get all students by major
+    // Get students by major
     @GetMapping("/major/{major}")
-    public ResponseEntity<List<Student>> getStudentsByMajor(@PathVariable String major) {
-        List<Student> students = studentService.getStudentsByMajor(major);
-        if (!students.isEmpty()) {
-            return ResponseEntity.ok(students);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public List<Student> getStudentsByMajor(@PathVariable String major) {
+        return studentRepository.findByMajor(major);
     }
 
-    // GET /api/students/filter?gpa={minGpa} - Filter students by minimum GPA
+    // Filter students by GPA
     @GetMapping("/filter")
-    public ResponseEntity<List<Student>> filterStudentsByGpa(@RequestParam Double gpa) {
-        List<Student> students = studentService.filterStudentsByGpa(gpa);
-        if (!students.isEmpty()) {
-            return ResponseEntity.ok(students);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public List<Student> filterStudentsByGpa(@RequestParam Double gpa) {
+        return studentRepository.findByGpaGreaterThanEqual(gpa);
     }
 
-    // POST /api/students - Register a new student
+    // Add new student
     @PostMapping
-    public ResponseEntity<Student> registerStudent(@RequestBody Student student) {
-        Student newStudent = studentService.registerStudent(student);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newStudent);
+    public Student addStudent(@RequestBody Student student) {
+        return studentRepository.save(student);
     }
 
-    // PUT /api/students/{studentId} - Update student information
-    @PutMapping("/{studentId}")
-    public ResponseEntity<Student> updateStudent(
-            @PathVariable Long studentId,
-            @RequestBody Student studentDetails) {
-        Student updatedStudent = studentService.updateStudent(studentId, studentDetails);
-        if (updatedStudent != null) {
-            return ResponseEntity.ok(updatedStudent);
-        } else {
-            return ResponseEntity.notFound().build();
+    // Update student
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable Long id, @RequestBody Student studentDetails) {
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+        if (optionalStudent.isPresent()) {
+            Student student = optionalStudent.get();
+            student.setName(studentDetails.getName());
+            student.setMajor(studentDetails.getMajor());
+            student.setGpa(studentDetails.getGpa());
+            return studentRepository.save(student);
         }
+        return null;
+    }
+
+    // Delete student
+    @DeleteMapping("/{id}")
+    public String deleteStudent(@PathVariable Long id) {
+        if (studentRepository.existsById(id)) {
+            studentRepository.deleteById(id);
+            return "Student deleted successfully";
+        }
+        return "Student not found";
     }
 }
+
