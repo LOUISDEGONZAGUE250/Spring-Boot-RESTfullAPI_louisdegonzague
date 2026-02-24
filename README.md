@@ -1,7 +1,9 @@
 Spring Boot RESTful API – Practical Assignment
 Student Name: Louis Degome
 Branch Name: restFull_api_StudentId
-📌 Project Overview
+
+
+ Project Overview
 
 This assignment consists of multiple independent Spring Boot RESTful API projects developed using Spring Initializr with only the Spring Web dependency.
 
@@ -33,8 +35,10 @@ No service layer or repository layer was used as instructed.
 
 All data is stored in memory using a List collection.
 
+
 ✅ Question 1: Library Book Management API
-📌 Description
+
+1. Description
 
 This API manages books in a library system.
 It allows users to:
@@ -51,7 +55,7 @@ Delete a book
 
 Three sample books were initialized when the application starts.
 
-📌 Endpoints Summary
+2. Endpoints Summary
 
 Get all books
 
@@ -63,7 +67,7 @@ Add new book
 
 Delete book by ID
 
-📌 HTTP Status Codes Used
+3. HTTP Status Codes Used
 
 200 OK – When request is successful
 
@@ -74,7 +78,7 @@ Delete book by ID
 404 NOT FOUND – When book does not exist
 
 ✅ Question 2: Student Registration API
-📌 Description
+1. Description
 
 This API manages student information.
 
@@ -94,7 +98,7 @@ Updating student information
 
 Five sample students were created with different majors and GPA values.
 
-📌 Testing Scenarios Completed
+2. Testing Scenarios Completed
 
 Filtering students by Computer Science major
 
@@ -102,7 +106,7 @@ Filtering students with GPA greater than or equal to 3.5
 
 Updating student information successfully
 
-📌 Status Codes Used
+3. Status Codes Used
 
 200 OK
 
@@ -111,7 +115,7 @@ Updating student information successfully
 404 NOT FOUND
 
 ✅ Question 3: Restaurant Menu API
-📌 Description
+1. Description
 
 This API manages a restaurant menu system.
 
@@ -143,12 +147,12 @@ Dessert
 
 Beverage
 
-📌 Special Feature
+2. Special Feature
 
 Availability can be toggled using a dedicated endpoint.
 
 ✅ Question 4: E-Commerce Product API
-📌 Description
+1. Description
 
 This API manages an e-commerce product catalog.
 
@@ -188,7 +192,7 @@ Prices
 
 Stock quantities
 
-📌 Advanced Features Implemented
+2. Advanced Features Implemented
 
 Pagination using page and limit parameters
 
@@ -199,7 +203,7 @@ Price range filtering
 Stock update using PATCH method
 
 ✅ Question 5: Task Management API
-📌 Description
+1. Description
 
 This API manages tasks (To-Do list).
 
@@ -234,7 +238,7 @@ Priority (LOW, MEDIUM, HIGH)
 Due date (YYYY-MM-DD format)
 
 🎁 Bonus: User Profile API
-📌 Description
+1. Description
 
 This API manages user profiles.
 
@@ -252,7 +256,7 @@ Activate and deactivate user profiles
 
 Custom response wrapper
 
-📌 Special Feature
+2. Special Feature
 
 All responses are wrapped inside a custom response object that contains:
 
